@@ -1,0 +1,71 @@
+{-# LANGUAGE ForeignFunctionInterface #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE StrictData #-}
+module TigerBeetle.FFI.Client where
+
+import Data.Word
+import Foreign.C.Types
+import Foreign.Ptr
+import Foreign.Marshal.Array
+import Foreign.Marshal.Alloc
+import Foreign.C.String
+import Foreign.Storable
+
+#include "tb_client.h"
+
+{#enum TB_STATUS as Status {underscoreToCase} with prefix = "tb_status" deriving (Eq, Ord, Show)#}
+
+{#enum TB_PACKET_STATUS as PacketStatus {underscoreToCase} with prefix = "tb_packet" deriving (Eq, Ord, Show)#}
+
+-- | Packet handle
+{#pointer *tb_packet_t as Packet#}
+
+{#pointer tb_client_t as Client #}
+
+-- | Type for the completion callback
+type CompletionCallback = 
+    CUintPtr ->     -- Context
+    Client ->     -- Client
+    Packet ->     -- Packet
+    Word32 ->     -- Reserved
+    Ptr Word8 -> -- Data
+    CUInt ->      -- Data size
+    IO ()
+
+
+-- | Client initialization
+{#fun tb_client_init as ^
+    { alloca-      `Client'
+    , withArray*   `[Word8]'
+    , withCString* `String'
+    , `Word32'
+    , `CUintPtr'
+    , id `FunPtr CompletionCallback'
+    } -> `Status' #}
+
+-- | Echo client initialization
+{#fun tb_client_init_echo as ^
+    { alloca-      `Client'      
+    , withArray*   `[Word8]'
+    , withCString* `String'
+    , `Word32'
+    , `CULong'
+    , id `FunPtr CompletionCallback'
+    } -> `Status' #}
+
+-- | Get completion context
+{#fun tb_client_completion_context as ^
+    { `Client'
+    } -> `CUintPtr' #}
+
+-- | Submit packet
+{#fun tb_client_submit as ^
+    { `Client'
+    , `Packet'
+    } -> `()' #}
+
+-- | Cleanup client
+{#fun tb_client_deinit as ^
+    { `Client'
+    } -> `()' #}

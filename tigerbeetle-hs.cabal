@@ -1,0 +1,101 @@
+cabal-version: 3.4
+name:          tigerbeetle-hs
+version:       0.0.0.0
+
+-- synopsis:       $synopsis
+-- description:    $description
+-- category:       $category
+-- homepage:       $gitrepo#readme
+-- bug-reports:    $gitrepo/issues
+-- maintainer:     $maintainer
+build-type:    Simple
+
+-- extra-source-files: cbits/tb_client_shim.c
+
+-- source-repository head
+--   type: git
+--   location: $gitrepo
+
+common common-opts
+  default-extensions:
+    AllowAmbiguousTypes
+    BlockArguments
+    ConstraintKinds
+    DataKinds
+    DeriveAnyClass
+    DeriveFunctor
+    DeriveGeneric
+    DerivingStrategies
+    DerivingVia
+    GADTs
+    GeneralizedNewtypeDeriving
+    ImportQualifiedPost
+    InstanceSigs
+    KindSignatures
+    LambdaCase
+    MultiParamTypeClasses
+    MultiWayIf
+    NamedFieldPuns
+    NoFieldSelectors
+    NumericUnderscores
+    OverloadedRecordDot
+    OverloadedStrings
+    RecordWildCards
+    ScopedTypeVariables
+    StandaloneDeriving
+    TupleSections
+    TypeApplications
+
+  build-depends:
+    , base
+    , binary
+    , bytestring
+    , containers
+    , stm
+    , text
+    , unordered-containers
+    , vector
+    , wide-word
+
+  default-language: Haskell2010
+
+library
+  import:          common-opts
+
+  -- cabal-fmt: expand src
+  exposed-modules:
+    TigerBeetle.FFI.Client
+    TigerBeetle.FFI.Queue
+
+  hs-source-dirs:  src
+  include-dirs:    include
+  extra-libraries: tigerbeetle
+
+executable tigerbeetle-hs
+  import:         common-opts
+  main-is:        Main.hs
+  hs-source-dirs: app
+  build-depends:  tigerbeetle-hs
+
+test-suite tigerbeetle-hs-tests
+  import:         common-opts
+  type:           exitcode-stdio-1.0
+  hs-source-dirs: test
+  ghc-options:
+    -Wall -threaded -rtsopts -with-rtsopts=-N -fdefer-typed-holes -O0
+
+  main-is:        Main.hs
+
+  -- cabal-fmt: expand test -Main
+  other-modules:
+    CoreSpec
+    Spec
+
+  build-depends:
+    , hedgehog
+    , hspec
+    , hspec-core
+    , hspec-discover
+    , hspec-expectations
+    , hspec-hedgehog
+    , tigerbeetle-hs

@@ -1,0 +1,8 @@
+cradle:
+  cabal:
+    - path: "./src"
+      component: "lib:tigerbeetle-hs"
+    - path: "./test"
+      component: "test:tigerbeetle-hs-tests"
+    - path: "./app"
+      component: "exe:tigerbeetle-hs"

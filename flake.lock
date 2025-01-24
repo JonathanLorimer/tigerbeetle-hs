@@ -1,0 +1,44 @@
+{
+  "nodes": {
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1737717945,
+        "narHash": "sha256-ET91TMkab3PmOZnqiJQYOtSGvSTvGeHoegAv4zcTefM=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "ecd26a469ac56357fd333946a99086e992452b6a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "nixpkgs": "nixpkgs",
+        "tigerbeetle-src": "tigerbeetle-src"
+      }
+    },
+    "tigerbeetle-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1737741341,
+        "narHash": "sha256-wlBdlvrzA2P9QxPbHZShrx7JSfk21tg6W7w+JouuZbg=",
+        "owner": "tigerbeetle",
+        "repo": "tigerbeetle",
+        "rev": "f81ff2009a4e504c085b631417668e8093e9696c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tigerbeetle",
+        "repo": "tigerbeetle",
+        "type": "github"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
