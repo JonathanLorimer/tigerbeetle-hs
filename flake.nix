@@ -26,7 +26,9 @@
           pkgs = nixpkgs.legacyPackages.${system};
           hsPkgs = pkgs.haskellPackages.override {
             overrides = hfinal: hprev: {
-              tigerbeetle-hs = hfinal.callCabal2nix "tigerbeetle-hs" ./. {};
+              tigerbeetle-hs = pkgs.haskell.lib.dontCheck (hfinal.callCabal2nix "tigerbeetle-hs" ./. {
+                tb_client = self.packages.${system}.libtb_client;
+              });
             };
           };
         });
@@ -38,12 +40,17 @@
     devShell = forAllSystems ({
       hsPkgs,
       pkgs,
+      system,
       ...
     }:
       hsPkgs.shellFor {
         # withHoogle = true;
         shellHook = ''
-          ln -s ${tigerbeetle-src}/src/clients/c/tb_client.h include/
+          canonical="${tigerbeetle-src}/src/clients/c/tb_client.h"
+          local="./include/tb_client.h"
+          cmp --silent $canonical $local || cat $canonical > $local
+
+          export PKG_CONFIG_PATH="${self.packages.${system}.libtb_client}/lib"
         '';
         packages = p: [
           p.tigerbeetle-hs
@@ -57,6 +64,7 @@
           haskellPackages.cabal-fmt
           pkgs.zig
           pkgs.tigerbeetle
+          self.packages.${system}.libtb_client
         ];
       });
 
@@ -67,6 +75,7 @@
       ...
     }: {
       tigerbeetle-hs = hsPkgs.tigerbeetle-hs;
+      libtb_client = (import ./nix/libtb_client.nix) {inherit pkgs tigerbeetle-src;};
       default = hsPkgs.tigerbeetle-hs;
     });
 

@@ -50,7 +50,8 @@ initClient clusterId addr responseQueue =
     callbackPtr <- makeCompletionCallback callback
 
     -- Initialize the client
-    withArray clusterId $ \cluster_id_16 ->
+    withArray clusterId $ \cluster_id_16 -> do
+      print cluster_id_16
       T.withCString addr $ \address_ptr -> do
         status <- tb_client_init out_client cluster_id_16 address_ptr (fromIntegral $ sizeOf address_ptr) 0 callbackPtr
         case status of

@@ -69,7 +69,7 @@ library
 
   hs-source-dirs:  src
   include-dirs:    include
-  extra-libraries: tigerbeetle
+  pkgconfig-depends: tb_client
 
 executable tigerbeetle-hs
   import:         common-opts
